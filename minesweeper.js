@@ -1,9 +1,9 @@
 document.addEventListener('DOMContentLoaded', startGame)
 
 // Define your `board` object here!
-var board = createBoard(4, 4);
+var board = createBoard(4, 4, 0.2);
 
-function createBoard(x, y) {
+function createBoard(x, y, probability) {
     var board = {};
     board.cells = [];
     for (var i = 0; i < x; i++) {
@@ -11,7 +11,7 @@ function createBoard(x, y) {
             board.cells.push({
                 row: i,
                 col: j,
-                isMine: true,
+                isMine: generateRandomBoolean(probability),
                 isMarked: false,
                 hidden: true
             })
@@ -20,36 +20,43 @@ function createBoard(x, y) {
     return board;
 }
 
+function generateRandomBoolean(probability) {
+    if (Math.random() < probability) {
+        return true;
+    } else return false
+}
+
 
 function startGame(cell) {
 
     // Don't remove this function call: it makes the game work!
     lib.initBoard()
-
-    for (var i = 0; i < 9; i++) {
+    for (var i = 0; i < board.cells.length; i++) {
         board.cells[i].surroundingMines = countSurroundingMines(board.cells[i]);
     }
-
     document.addEventListener('click', checkForWin);
     document.addEventListener('contextmenu', checkForWin);
 }
+
 
 
 // Define this function to look for a win condition:
 //
 // 1. Are all of the cells that are NOT mines visible?
 // 2. Are all of the mines marked?
-function checkForWin() {
 
+
+
+function checkForWin() {
+  function checkCell(array){
+    return ((array.isMine == true && array.isMarked == true) || (array.hidden === false && array.isMine == false));
+  }
     // You can use this function call to declare a winner (once you've
     // detected that they've won, that is!)
     //   lib.displayMessage('You win!')
-
-    for (var i = 0; i < board.cells.length; i++) {
-        if (board.cells[i].isMarked === true && board.cells[i].isMine == true) {
-            lib.displayMessage('You win!');
-        }
-    }
+    if (board.cells.every(checkCell)) {
+       lib.displayMessage('You win!')
+    };
 }
 
 // Define this function to count the number of mines around the cell
