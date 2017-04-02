@@ -56,6 +56,11 @@ function resetGame() {
 
 function playSound(id) {
     var audio = document.getElementById(id);
+
+    // Stop the sound in case it's already playing
+    audio.pause();
+    audio.currentTime = 0;
+
     audio.play();
 }
 
