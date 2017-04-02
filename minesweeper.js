@@ -1,7 +1,7 @@
 document.addEventListener('DOMContentLoaded', startGame)
 
 // Define your `board` object here!
-var board = createBoard(4, 4, 0.2);
+var board;
 
 function createBoard(x, y, probability) {
     var board = {};
@@ -30,14 +30,21 @@ function generateRandomBoolean(probability) {
 function startGame(cell) {
 
     // Don't remove this function call: it makes the game work!
-    lib.initBoard()
-    for (var i = 0; i < board.cells.length; i++) {
-        board.cells[i].surroundingMines = countSurroundingMines(board.cells[i]);
-    }
+    resetGame();
     document.addEventListener('click', checkForWin);
     document.addEventListener('contextmenu', checkForWin);
+    document.getElementById('resetButton').addEventListener('click', resetGame);
 }
 
+function resetGame() {
+  var boardNode = document.getElementsByClassName('board')[0];
+  boardNode.innerHTML = '';
+  board = createBoard(4, 4, 0.2);
+  for (var i = 0; i < board.cells.length; i++) {
+      board.cells[i].surroundingMines = countSurroundingMines(board.cells[i]);
+  }
+  lib.initBoard();
+}
 
 
 // Define this function to look for a win condition:
@@ -48,14 +55,14 @@ function startGame(cell) {
 
 
 function checkForWin() {
-  function checkCell(array){
-    return ((array.isMine == true && array.isMarked == true) || (array.hidden === false && array.isMine == false));
-  }
+    function checkCell(array) {
+        return ((array.isMine == true && array.isMarked == true) || (array.hidden === false && array.isMine == false));
+    }
     // You can use this function call to declare a winner (once you've
     // detected that they've won, that is!)
     //   lib.displayMessage('You win!')
     if (board.cells.every(checkCell)) {
-       lib.displayMessage('You win!')
+        lib.displayMessage('You win!')
     };
 }
 
