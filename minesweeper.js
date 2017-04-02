@@ -3,29 +3,34 @@ document.addEventListener('DOMContentLoaded', startGame)
 // Define your `board` object here!
 var board;
 
-function createBoard(x, y, probability) {
-    var board = {};
-    board.cells = [];
-    for (var i = 0; i < x; i++) {
-        for (var j = 0; j < y; j++) {
-            board.cells.push({
+function createBoard(size) {
+    var result = {};
+    result.cells = [];
+    for (var i = 0; i < size; i++) {
+        for (var j = 0; j < size; j++) {
+            result.cells.push({
                 row: i,
                 col: j,
-                isMine: generateRandomBoolean(probability),
+                isMine: false,
                 isMarked: false,
                 hidden: true
             })
         }
     }
-    return board;
+    setMines(result);
+    return result;
 }
 
-function generateRandomBoolean(probability) {
-    if (Math.random() < probability) {
-        return true;
-    } else return false
+function setMines(aBoard) {
+    var minesToSet = Math.floor(aBoard.cells.length / 4);
+    while (minesToSet > 0) {
+        var cellIndex = Math.floor(Math.random() * (aBoard.cells.length));
+        if (!aBoard.cells[cellIndex].isMine) {
+            aBoard.cells[cellIndex].isMine = true;
+            minesToSet--;
+        }
+    }
 }
-
 
 function startGame(cell) {
 
@@ -37,13 +42,13 @@ function startGame(cell) {
 }
 
 function resetGame() {
-  var boardNode = document.getElementsByClassName('board')[0];
-  boardNode.innerHTML = '';
-  board = createBoard(4, 4, 0.2);
-  for (var i = 0; i < board.cells.length; i++) {
-      board.cells[i].surroundingMines = countSurroundingMines(board.cells[i]);
-  }
-  lib.initBoard();
+    var boardNode = document.getElementsByClassName('board')[0];
+    boardNode.innerHTML = '';
+    board = createBoard(5);
+    for (var i = 0; i < board.cells.length; i++) {
+        board.cells[i].surroundingMines = countSurroundingMines(board.cells[i]);
+    }
+    lib.initBoard();
 }
 
 
