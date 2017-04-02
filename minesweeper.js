@@ -37,7 +37,10 @@ function startGame(cell) {
     // Don't remove this function call: it makes the game work!
     resetGame();
     document.addEventListener('click', checkForWin);
+    document.addEventListener('click', checkForLose);
+    document.addEventListener('click', playClickSound);
     document.addEventListener('contextmenu', checkForWin);
+    document.addEventListener('contextmenu', playMarkSound);
     document.getElementById('resetButton').addEventListener('click', resetGame);
 }
 
@@ -51,13 +54,31 @@ function resetGame() {
     lib.initBoard();
 }
 
+function playSound(id) {
+    var audio = document.getElementById(id);
+    audio.play();
+}
 
+function playClickSound() {
+    playSound('click');
+}
+
+function playMarkSound() {
+    playSound('mark');
+}
 // Define this function to look for a win condition:
 //
 // 1. Are all of the cells that are NOT mines visible?
 // 2. Are all of the mines marked?
 
-
+function checkForLose() {
+    function checkCell(array) {
+        return (array.isMine == true && array.hidden === false);
+    }
+    if (board.cells.some(checkCell)) {
+        playSound('loss');
+    };
+}
 
 function checkForWin() {
     function checkCell(array) {
@@ -67,7 +88,8 @@ function checkForWin() {
     // detected that they've won, that is!)
     //   lib.displayMessage('You win!')
     if (board.cells.every(checkCell)) {
-        lib.displayMessage('You win!')
+        lib.displayMessage('You win!');
+        playSound('win');
     };
 }
 
